@@ -23,9 +23,22 @@ class NameList extends React.Component {
 		var data = this.state.data;
 		var from = Number(this.dragged.dataset.id);
 		var to = Number(this.over.dataset.id);
-		if (from < to) to--;
-		data.splice(to, 0, data.splice(from, 1)[0]);
-		this.setState({ data: data });
+
+		const newData = data.map(item => {
+			const keys = Object.keys(item);
+			let fromKey = keys[from];
+			let toKey = keys[to];
+
+			keys[from] = toKey;
+			keys[to] = fromKey;
+
+			const modifiedItem = {};
+			keys.forEach(key => {
+				modifiedItem[key] = item[key];
+			});
+			return modifiedItem;
+		});
+		this.setState({ data: newData });
 	}
 	dragOver(e) {
 		e.preventDefault();
@@ -35,7 +48,8 @@ class NameList extends React.Component {
 		e.target.parentNode.insertBefore(placeholder, e.target);
 	}
 	render() {
-		var listItems = this.state.data.map((item, i) => {
+		const attributes = Object.keys(this.state.data[0] || {});
+		var listItems = attributes.map((item, i) => {
 			return (
 				<li
 					data-id={i}
@@ -43,8 +57,9 @@ class NameList extends React.Component {
 					draggable="true"
 					onDragEnd={this.dragEnd.bind(this)}
 					onDragStart={this.dragStart.bind(this)}
+					style={{ fontWeight: 'bold' }}
 				>
-					{item.name}
+					{item.toUpperCase()}
 				</li>
 			);
 		});

@@ -2,6 +2,7 @@ import React from 'react';
 import './table.css';
 
 function Table({ data = [] }) {
+	const keys = Object.keys(data[0]);
 	const rows = data.map((row, index) => {
 		const keys = Object.keys(row).map(cell => {
 			return <td key={cell.toString()}>{row[cell]}</td>;
@@ -13,10 +14,9 @@ function Table({ data = [] }) {
 			<table>
 				<thead>
 					<tr>
-						<th>Name</th>
-						<th>Employee Id</th>
-						<th>Designation</th>
-						<th>City</th>
+						{keys.map(key => (
+							<td style={{ fontWeight: 'bold' }}>{key.toUpperCase()}</td>
+						))}
 					</tr>
 				</thead>
 				<tbody>{rows}</tbody>
